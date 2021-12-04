@@ -1,28 +1,55 @@
-import React from "react";
-import "./styles.css"
+import { useEffect, useState } from "react";
 
+import api from "../../Api";
 
-function CardEpisodios(props){
-    const { id,name,episode,air_date,quant_person } = props;
+import CardEpisodios from "../../Components/CardEpisodios";
 
-    return(
-        <div className="card">
-            <p> {id} </p>
+function Episodios(){
+    
+    const [data, setData] = useState(null);
+    
+    
 
-            <p>{name}</p>
+    useEffect( () => {
+        const load = async()=>{
+            let response = await api.getEpisodios();
+            setData(response);
             
-           
-            <p>{episode}</p>
-           
+         
+        }
+        load();
+   }, [])
+   
+
+ return(
+ 
+       <div className="results-container">
           
-            <p>{air_date}</p>
-           
-           
-            <p>{quant_person}</p>
+        {data &&
+            ((data.error)
+                ? <h1>Busca não encontrada</h1>
+                : data.results.map((item, key) => {
+                    return <CardEpisodios
+                                key={key}
+                                id={item.id}
+                                air_date={item.air_date}
+                                episode={item.episode}
+                                name={item.name}
+                                quant_person ={item.quant_person}
+                                />
+                            })
+                        )
+                    }
+
             
+                    
+                    
+                </div>
 
-        </div>
-    );
-}
+           
+        );
+                }
 
-export default CardEpisodios;
+
+                
+        export default Episodios;
